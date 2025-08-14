@@ -1,4 +1,5 @@
 <?php
+
 namespace MiniStore\Modules\Orders;
 
 use MiniStore\Modules\Products\Product;
