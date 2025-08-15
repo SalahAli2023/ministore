@@ -1,28 +1,8 @@
 <?php
-namespace MiniStore\Traits;
-
-trait StatusHandler
-{
-    protected $status = 'pending';
-
-    public function setStatus($status)
-    {
-        $this->status = $status;
-        return $this;
-    }
-
-    public function getStatus()
-    {
-        return $this->status;
-    }
-}
-7. src/Modules/Products/Product.php
-php
-<?php
 namespace MiniStore\Modules\Products;
+require_once 'src/Modules/Core/Logger.php';
 
-use MiniStore\Traits\Loggable;
-
+// use MiniStore\Traits\Loggable;
 class Product
 {
     use Loggable;

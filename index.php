@@ -1,23 +1,37 @@
 <?php
-require_once 'config.php';
+require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/config.php';
+use MiniStore\Modules\Users\{Admin,Customer};
+use MiniStore\Modules\Payments\{Paypal, Stripe};
+
 require_once 'src/Modules/Core/Config.php';
 require_once 'src/Modules/Core/Logger.php';
 
 // Autoload classes
-spl_autoload_register(function ($class) {
-    $file = str_replace('\\', '/', $class) . '.php';
-    if (file_exists($file)) {
-        require $file;
-    }
-});
+// spl_autoload_register(function ($class) {
+//     $file = str_replace('\\', '/', $class) . '.php';
+    
+//     if (file_exists($file)) {
+//         require $file;
+//     }
+// });
+
+// spl_autoload_register(function ($class) {
+    
+//     if (file_exists($file)) {
+//         require $file;
+//     } else {
+//         // throw new Exception("Class {$class} not found in {$file}");
+//     }
+// });
 
 // Load configuration
-\MiniStore\Modules\Core\Config::load('config.php');
+\MiniStore\Modules\Core\Config::load(__DIR__.'/config.php');
 
 // Create products
 $product1 = new \MiniStore\Modules\Products\Product(1, 'Laptop', 999.99, 10, 'High performance laptop');
 $product2 = new \MiniStore\Modules\Products\Product(2, 'Smartphone', 599.99, 20, 'Latest model smartphone');
-$product3 = new \MiniStore\Modules\Products\Product(3, 'Headphones', 99.99, 50, 'Noise cancelling headphones');
+$product3 = new \src\Modules\Products\Product(3, 'Headphones', 99.99, 50, 'Noise cancelling headphones');
 
 // Create a customer
 $customer = new \MiniStore\Modules\Users\Customer(
