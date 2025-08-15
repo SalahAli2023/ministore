@@ -7,6 +7,9 @@ class Config
 
     public static function load($configFile)
     {
+        if (!file_exists($configFile)) {
+            throw new RuntimeException("Config file not found");
+        }
         self::$config = require $configFile;
     }
 
