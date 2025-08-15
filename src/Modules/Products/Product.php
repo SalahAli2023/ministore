@@ -1,8 +1,8 @@
 <?php
 namespace MiniStore\Modules\Products;
-require_once 'src/Modules/Core/Logger.php';
 
-// use MiniStore\Traits\Loggable;
+use MiniStore\Traits\Loggable;
+
 class Product
 {
     use Loggable;
@@ -23,13 +23,6 @@ class Product
         
         $this->logAction("Product created: {$this->name}");
     }
-
-    // Getters
-    public function getId() { return $this->id; }
-    public function getName() { return $this->name; }
-    public function getPrice() { return $this->price; }
-    public function getStock() { return $this->stock; }
-    public function getDescription() { return $this->description; }
 
     // Setters with validation
     public function setName($name)
@@ -68,4 +61,12 @@ class Product
         $this->logAction("Stock decreased for {$this->name} by $quantity");
         return $this;
     }
+
+     // Getters
+    public function getId() { return $this->id; }
+    public function getName() { return $this->name; }
+    public function getPrice() { return $this->price; }
+    public function getStock() { return $this->stock; }
+    public function getDescription() { return $this->description; }
+
 }
