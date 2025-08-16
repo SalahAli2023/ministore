@@ -21,10 +21,10 @@ class PaymentProcessor
         $result = $this->paymentGateway->processPayment($total);
         
         if ($result['success']) {
-            $order->setStatus('paid');
+            $order->setStatus($order::STATUS_PAID);
             $this->logAction("Order {$order->getId()} payment successful via {$result['gateway']}");
         } else {
-            $order->setStatus('payment_failed');
+            $order->setStatus($order::STATUS_FAILED);
             $this->logAction("Order {$order->getId()} payment failed");
         }
 

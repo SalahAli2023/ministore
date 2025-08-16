@@ -7,6 +7,7 @@ use MiniStore\Modules\Users\Customer;
 use MiniStore\Traits\Loggable;
 use MiniStore\Traits\Discountable;
 use MiniStore\Traits\StatusHandler;
+use \MiniStore\Modules\Core\Config;
 
 class Order
 {
@@ -39,29 +40,58 @@ class Order
         ];
 
         $this->logAction("Product {$product->getName()} added to order {$this->id}");
-        return $this;
+        // return $this;
+    }
+
+    public function calculateBeforeTaxDiscount()
+    {
+        $subtotal = 0.0;
+        foreach ($this->products as $item) {
+            $subtotal += $item['product']->getPrice() * $item['quantity'];
+        }
+        return round($subtotal, 2);
     }
 
     public function calculateTotal($applyDiscount = false)
     {
-        $subtotal = 0;
-        
-        foreach ($this->products as $item) {
-            $subtotal += $item['product']->getPrice() * $item['quantity'];
-        }
-
-        $taxRate = \MiniStore\Modules\Core\Config::get('tax_rate');
+        $subtotal = $this->calculateBeforeTaxDiscount();
+        $taxRate = Config::get('tax_rate');
         $taxAmount = $subtotal * $taxRate;
 
         $this->total = $subtotal + $taxAmount;
 
         if ($applyDiscount) {
-            $discountPercentage = \MiniStore\Modules\Core\Config::get('discount_percentage');
+            $discountPercentage = Config::get('discount_percentage');
             $this->total = $this->applyDiscount($this->total, $discountPercentage);
             $this->logAction("Discount applied to order {$this->id}");
         }
 
         return $this->total;
+    }
+
+    public function returnCalculateTotal($applyDiscount = false)
+    {
+        $subtotal = $this->calculateBeforeTaxDiscount();
+        $taxRate = Config::get('tax_rate');
+
+        if ($applyDiscount) {
+            $discountPercentage = Config::get('discount_percentage');
+            $discount=$subtotal*$discountPercentage;
+            $totalAfterDiscount = $this->applyDiscount($subtotal, $discountPercentage);
+            $this->logAction("Discount applied to order {$this->id}");
+        }
+        $taxAmount = $totalAfterDiscount * $taxRate;
+        $this->total = $totalAfterDiscount + $taxAmount;
+        return [
+            'totalBeforeTaxDiscount'=>$subtotal,
+            'discount_percent' => $discountPercentage,
+            'discount_value' => $discount,
+            'totalAfterDiscount'=>$totalAfterDiscount,
+            'tax_rate' => $taxRate,
+            'tax' => $taxAmount,
+            'total' => $this->total,
+        ]
+        ;
     }
 
     public function getProducts() { return $this->products; }
