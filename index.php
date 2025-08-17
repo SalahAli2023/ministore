@@ -69,7 +69,8 @@ $totals= $order->returnCalculateTotal(true);
 <body>
     <main class="container">
         <h1>MiniStore - PHP OOP Demo</h1>
-
+        
+        <!-- Customer section -->
         <section class="box">
             <h2>Customer</h2>
             <p><strong>Name:</strong> <?= htmlspecialchars($customer1->getName()) ?></p>
@@ -77,6 +78,17 @@ $totals= $order->returnCalculateTotal(true);
             <p><strong>Admin Role:</strong> <?= htmlspecialchars($admin->getRole()) ?></p>
         </section>
 
+        <!-- Products section -->
+        <section class="box">
+            <h2>Products (Current Stock)</h2>
+            <ul>
+                <li><?= htmlspecialchars($product1->getName()) ?> — Stock: <?= $product1->getStock(); ?></li>
+                <li><?= htmlspecialchars($product2->getName()) ?> — Stock: <?= $product2->getStock(); ?></li>
+                <li><?= htmlspecialchars($product3->getName()) ?> — Stock: <?= $product3->getStock(); ?></li>
+            </ul>
+        </section>
+    
+        <!-- Order section -->
         <section class="box">
             <h2>Order #<?= $order->getId(); ?> <small class="status <?= strtolower($order->getStatus()); ?>">(<?= $order->getStatus(); ?>)</small></h2>
             <table>
@@ -101,24 +113,10 @@ $totals= $order->returnCalculateTotal(true);
                     <tr><th colspan="3" class="right">Total</th><td><strong><?= number_format($totals['total'], 2) . 'USD'; ?></strong></td></tr>
                 </tfoot>
             </table>
-
-            <div class="actions">
-                <a href="?gateway=paypal" class="btn">Pay with PayPal</a>  /
-                <a href="?gateway=stripe" class="btn">Pay with Stripe</a>
-            </div>
-            <br>
-            <div class="alert ">Payment successful via <?= htmlspecialchars($gatewayName); ?>!</div>
         </section>
 
+        <!-- Payment section -->
         <section class="box">
-            <h2>Products (Current Stock)</h2>
-            <ul>
-                <li><?= htmlspecialchars($product1->getName()) ?> — Stock: <?= $product1->getStock(); ?></li>
-                <li><?= htmlspecialchars($product2->getName()) ?> — Stock: <?= $product2->getStock(); ?></li>
-                <li><?= htmlspecialchars($product3->getName()) ?> — Stock: <?= $product3->getStock(); ?></li>
-            </ul>
-        </section>
-        <section>
             <h2>Payment Result:</h2>
             <?=print_r($paymentResult);?> 
             <p>Order Status:<?= htmlspecialchars($order->getStatus()) ?></p>
@@ -146,6 +144,14 @@ $totals= $order->returnCalculateTotal(true);
                     <?php endforeach; ?>
                 </tbody>
             </table> 
+
+            <div class="actions">
+                <a href="?gateway=paypal" class="btn">Pay with PayPal</a>  /
+                <a href="?gateway=stripe" class="btn">Pay with Stripe</a>
+            </div>
+            <br>
+            <div class="alert ">Payment successful via <?= htmlspecialchars($gatewayName); ?>!</div>
+        
         </section>
     </main>
 </body>
