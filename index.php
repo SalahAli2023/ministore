@@ -21,12 +21,6 @@ $product3 = new Product(3, 'Headphones', 85.99, 50, 'Noise cancelling headphones
 $customer1 = new Customer(1, 'Salah Ali', 'salah@gmail.com', password_hash('123456', PASSWORD_BCRYPT), '123 Main St, City','1234567890');
 // $customer2 = new Customer(2,'Sami Ali', 'sami@gmail.com', password_hash('password123', PASSWORD_BCRYPT),'123 Main St, City','1234567890');
 
-echo "<h1>Welcome to MiniStore</h1>";
-echo "<h3>Products:</h3>";
-foreach ([$product1, $product2,$product3] as $product) {
-    echo "<p>{$product->getName()} - {$product->getPrice()} USD</p>";
-}
-
 // Create an order
 $order = new Order(1001, $customer1);
 $order->addProduct($product1, 1);
@@ -35,7 +29,7 @@ $order->addProduct($product3, 1);
 
 // Calculate total with discount
 $total = $order->calculateTotal(true);
-echo "Order Total: $" . number_format($total, 2) . "<br>";
+// echo "Order Total: $" . number_format($total, 2) . "<br>";
 
 
 // Choose a payment gateway (polymorphism)
@@ -46,16 +40,21 @@ $gateway = $gatewayName === 'stripe' ? new Stripe('32453334') : new PayPal('merc
 $paymentProcessor = new PaymentProcessor($gateway);
 $paymentResult = $paymentProcessor->processOrderPayment($order);
 
-echo "<br>Payment Result:<br>";
-print_r($paymentResult);
+$method=[
 
-// Display order status
-echo "Order Status: " . $order->getStatus() . "<br>";
+    $gatewayName =>$paymentProcessor
+];
+
+$results=[];
+
+foreach ($method as $methodName => $processor) {
+    $results[$methodName] = $processor->processOrderPayment($order);
+}
 
 // Create an admin (just for demonstration)
 $admin = new Admin(1,'Admin User','admin@gmail.com',password_hash('admin123', PASSWORD_BCRYPT),3);
 
-echo "Admin Role: " . $admin->getRole() . "<br>";
+
 $totals= $order->returnCalculateTotal(true);
 ?>
 
@@ -75,6 +74,7 @@ $totals= $order->returnCalculateTotal(true);
             <h2>Customer</h2>
             <p><strong>Name:</strong> <?= htmlspecialchars($customer1->getName()) ?></p>
             <p><strong>Email:</strong> <?= htmlspecialchars($customer1->getEmail()) ?></p>
+            <p><strong>Admin Role:</strong> <?= htmlspecialchars($admin->getRole()) ?></p>
         </section>
 
         <section class="box">
@@ -103,9 +103,11 @@ $totals= $order->returnCalculateTotal(true);
             </table>
 
             <div class="actions">
-                <a href="?gateway=paypal" class="btn">Pay with PayPal</a>
+                <a href="?gateway=paypal" class="btn">Pay with PayPal</a>  /
                 <a href="?gateway=stripe" class="btn">Pay with Stripe</a>
             </div>
+            <br>
+            <div class="alert ">Payment successful via <?= htmlspecialchars($gatewayName); ?>!</div>
         </section>
 
         <section class="box">
@@ -115,6 +117,35 @@ $totals= $order->returnCalculateTotal(true);
                 <li><?= htmlspecialchars($product2->getName()) ?> — Stock: <?= $product2->getStock(); ?></li>
                 <li><?= htmlspecialchars($product3->getName()) ?> — Stock: <?= $product3->getStock(); ?></li>
             </ul>
+        </section>
+        <section>
+            <h2>Payment Result:</h2>
+            <?=print_r($paymentResult);?> 
+            <p>Order Status:<?= htmlspecialchars($order->getStatus()) ?></p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Payment Way</th>
+                        <th>Process No</th>
+                        <th>Price</th>
+                        <th>Status</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($results as $method => $result): ?>
+                    <tr> 
+                        <td><?= htmlspecialchars($method) ?></td>
+                        <td><?= htmlspecialchars($result['transaction_id']) ?></td>
+                        <td><?= number_format($result['amount'], 2) ?> USD</td>
+                        <td class="<?= $result['success'] ? 'success' : 'error' ?>">
+                            <?= $result['success'] ? 'success' : 'Failed' ?>
+                        </td>
+                        <td><?= date('Y-m-d H:i:s') ?></td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table> 
         </section>
     </main>
 </body>

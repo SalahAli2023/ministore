@@ -1,3 +1,7 @@
+* { 
+    box-sizing: border-box; 
+}
+
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
@@ -6,6 +10,19 @@ body {
     max-width: 1200px;
     margin: auto;
 }
+
+.container { 
+    max-width: 900px; 
+    margin: 0 auto; 
+}
+
+.box { 
+    background:#fff; 
+    border:1px solid #eee; 
+    border-radius:12px;
+    padding:1rem; 
+    margin-bottom:1rem; 
+    box-shadow:0 1px 2px rgba(0,0,0,.03); }
 
 form {
     margin: 20px 0;
@@ -28,4 +45,9 @@ th, td {
     border: 1px solid #ddd;
     padding: 8px;
     text-align: left;
+}
+
+.alert .success { 
+    background:#3d6a41; 
+    border:1px solid #c8e6c9; 
 }

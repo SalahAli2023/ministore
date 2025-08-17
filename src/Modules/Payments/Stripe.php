@@ -21,10 +21,10 @@ class Stripe implements PaymentGateway
         $this->logAction("Stripe payment processed: $transactionId for amount $amount");
         
         return [
-            'success' => true,
+            'gateway' => 'Stripe',            
             'transaction_id' => $transactionId,
             'amount' => $amount,
-            'gateway' => 'Stripe'
+            'success' => true,
         ];
     }
 

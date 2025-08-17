@@ -23,10 +23,10 @@ class PayPal implements PaymentGateway
         $this->logAction("PayPal payment processed: $transactionId for amount $amount");
         
         return [
-            'success' => true,
+            'gateway' => 'PayPal',
             'transaction_id' => $transactionId,
             'amount' => $amount,
-            'gateway' => 'PayPal'
+            'success' => true,
         ];
     }
 
